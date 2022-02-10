@@ -1,16 +1,12 @@
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import java.math.BigInteger;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Stack;
 
 public class Calculator {
 
-    private static Logger logger = LogManager.getLogger(Calculator.class);
-
     private static final Stack<String> operations = new Stack<>();
-    private static final Stack<Integer> numbers = new Stack<>();
+    private static final Stack<BigInteger> numbers = new Stack<>();
 
 
     public static void main(String[] args) {
@@ -25,7 +21,7 @@ public class Calculator {
                 System.out.println(expression + "=" + numbers.pop());
             }
         } catch (NoSuchElementException ex) {
-            logger.error("Something went wrong: Please enter your expression!");
+            System.err.println("Something went wrong: Please enter your expression!");
         }
     }
 
@@ -47,7 +43,7 @@ public class Calculator {
                         Character.isDigit(expression.charAt(index + 1))) {
                     value.append(expression.charAt(++index));
                 }
-                numbers.push(Integer.parseInt(value.toString()));
+                numbers.push(BigInteger.valueOf(Long.parseLong(value.toString())));
             }
             index++;
         }
@@ -59,27 +55,27 @@ public class Calculator {
 
     private static void doOperation() {
         String op = operations.pop();
+        BigInteger lastElement = numbers.pop();
+        BigInteger previousElement = numbers.pop();
         switch (op) {
             case "*":
-                numbers.push(numbers.pop() * numbers.pop());
+                numbers.push(previousElement.multiply(lastElement));
                 break;
             case "/":
                 try {
-                    int first = numbers.pop();
-                    int second = numbers.pop();
-                    numbers.push(second / first);
+                    numbers.push(previousElement.divide(lastElement));
                 } catch (ArithmeticException ex) {
-                    logger.error("Your expression failed, you " + ex.getMessage());
+                    System.err.println("Your expression failed, you " + ex.getMessage());
                 }
                 break;
             case "+":
-                numbers.push(numbers.pop() + numbers.pop());
+                numbers.push(previousElement.add(lastElement));
                 break;
             case "-":
-                numbers.push(numbers.pop() - numbers.pop());
+                numbers.push(previousElement.subtract(lastElement));
                 break;
             default:
-                logger.warn("You entered a wrong expression");
+                System.out.println("You entered a wrong expression");
         }
     }
 }
