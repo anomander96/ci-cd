@@ -1,9 +1,14 @@
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.math.BigInteger;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Stack;
 
 public class Calculator {
+
+    private static Logger logger = LogManager.getLogger(Calculator.class);
 
     private static final Stack<String> operations = new Stack<>();
     private static final Stack<BigInteger> numbers = new Stack<>();
@@ -21,7 +26,7 @@ public class Calculator {
                 System.out.println(expression + "=" + numbers.pop());
             }
         } catch (NoSuchElementException ex) {
-            System.err.println("Something went wrong: Please enter your expression!");
+            logger.error("Something went wrong: Please enter your expression!");
         }
     }
 
@@ -65,7 +70,7 @@ public class Calculator {
                 try {
                     numbers.push(previousElement.divide(lastElement));
                 } catch (ArithmeticException ex) {
-                    System.err.println("Your expression failed, you " + ex.getMessage());
+                    logger.error("Your expression failed, you " + ex.getMessage());
                 }
                 break;
             case "+":
@@ -75,7 +80,7 @@ public class Calculator {
                 numbers.push(previousElement.subtract(lastElement));
                 break;
             default:
-                System.out.println("You entered a wrong expression");
+                logger.error("You entered a wrong expression");
         }
     }
 }
