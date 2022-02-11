@@ -15,6 +15,7 @@ pipeline {
                        sh 'gradle run --args="10+5/(8-5)"'
                   }
             }
+            //should add one more stage for cw
             stage('Test') {
                         steps {
                             sh 'mvn test'
